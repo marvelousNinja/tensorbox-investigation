@@ -1,0 +1,8 @@
+version: '2'
+services:
+  tensorbox:
+    build: ./tensorbox
+    volumes:
+      - ./complete-data:/notebooks/tensorbox/data/complete-data
+    ports:
+      - '6007:6006'

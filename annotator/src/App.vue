@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { times, map, append, findIndex, whereEq, lensPath, over, last, adjust, merge, without } from 'ramda'
+import { times, map, append, findIndex, whereEq, lensPath, over, last, adjust, merge, without, evolve, min, max } from 'ramda'
 import Rects from './components/Rects'
 
 const padNum = num => ('00' + num).slice(-3)
@@ -79,7 +79,16 @@ export default {
       ))
     },
     downloadJson () {
-      this.$refs.downloadLink.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.images, null, 2))
+      const jsonData = map(evolve({
+        rects: map(({ x1, x2, y1, y2 }) => ({
+          x1: min(x1, x2),
+          x2: max(x1, x2),
+          y1: min(y1, y2),
+          y2: max(y1, y2)
+        }))
+      }), this.images)
+
+      this.$refs.downloadLink.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(jsonData, null, 2))
       this.$refs.downloadLink.click()
     }
   }
